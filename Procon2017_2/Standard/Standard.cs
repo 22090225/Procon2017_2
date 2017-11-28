@@ -21,7 +21,7 @@ namespace Procon2017_2.Standard
                 }
             }
 
-            //対応付け
+            //対応付け(node初期化)
             for (int x = 0; x < Field.Size; x++)
             {
                 for (int y = 0; y < Field.Size; y++)
@@ -40,21 +40,6 @@ namespace Procon2017_2.Standard
             }
 
             //外に出られるノードを探す
-            //for (int x = 0; x < Field.Size; x++)
-            //{
-            //    for (int y = 0; y < Field.Size; y++)
-            //    {
-            //        // まだCanOutになっていなくて外に出られるものを探す
-            //        if (Field.OriginalBoad[x, y] != "w" && !Boad[x, y].CanOut && Boad[x, y].Next.Contains(null))
-            //        {
-            //            Boad[x, y].CanOut = true;
-            //            //自分に来ることができるノードをすべて帰納的にtrueにする
-            //            RecursivelCanOut(Boad[x, y]);
-            //        }
-            //    }
-            //}
-            //間接的に外に出れるノードがなくなるまで探す
-
             var count = 1;
             while (count != 0)
             {
@@ -72,20 +57,6 @@ namespace Procon2017_2.Standard
                     }
                 }
                 Console.WriteLine("count=" + count);
-            }
-        }
-
-        // Nextのうち自分に移動できるものを再帰的にtrueにする
-        private static void RecursivelCanOut(Node node)
-        {
-            for (int i = 0; i < 4; i++)
-            {
-                //自分に戻ることができて、まだtrueになっていないもの
-                if (node.Next[i] != null && node.Next[i].CanOut != true && node.Next[i].Next[(i + 2) % 4] == node)
-                {
-                    node.Next[i].CanOut = true;
-                    RecursivelCanOut(node.Next[i]);
-                }
             }
         }
 
@@ -108,7 +79,6 @@ namespace Procon2017_2.Standard
                 }
             }
         }
-
         private static Coor OneStep(Coor start, int direction)
         {
             switch (direction)

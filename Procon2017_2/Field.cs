@@ -47,9 +47,9 @@ namespace Procon2017_2
         //    {
         //        balls[i] = new Ball() { Coor = startBalls[i] };
 
-        //        var startTile = ConvertCharToState(Field.OriginalBoad[startBallPosition[i].X, startBallPosition[i].Y]);
+        //        var startTile = Field.OriginalBoad[startBalls[i].X, startBalls[i].Y];
         //        balls[i].Points[(int)startTile] = 1;
-        //        boad[startBallPosition[i].X, startBallPosition[i].Y].IsPassed = true;
+        //        boad[startBalls[i].X, startBalls[i].Y].IsPassed = true;
         //    }
         //}
 
