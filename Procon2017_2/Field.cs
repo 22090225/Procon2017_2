@@ -34,5 +34,6 @@ namespace Procon2017_2
                 Ends[i] = (Console.In.ReadLine()).Split(' ');
             }
         }
+
     }
 }

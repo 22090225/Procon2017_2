@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Procon2017_2.S10B2
+namespace Procon2017_2
 {
     public class Tile
     {
@@ -12,14 +12,14 @@ namespace Procon2017_2.S10B2
         public int Y;
         public TileState State;
         //public bool IsPassed;
+    }
 
-        public enum TileState
-        {
-            Red,
-            Blue,
-            Green,
-            Wall,
-            Ball
-        }
+    public enum TileState
+    {
+        Red,
+        Blue,
+        Green,
+        Wall,
+        Ball
     }
 }

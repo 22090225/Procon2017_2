@@ -233,18 +233,18 @@ namespace Procon2017_2.S10B2
             }
         }
 
-        static private Tile.TileState ConvertCharToState(string c)
+        static private TileState ConvertCharToState(string c)
         {
             switch (c)
             {
                 case "r":
-                    return Tile.TileState.Red;
+                    return TileState.Red;
                 case "b":
-                    return Tile.TileState.Blue;
+                    return TileState.Blue;
                 case "g":
-                    return Tile.TileState.Green;
+                    return TileState.Green;
                 case "w":
-                    return Tile.TileState.Wall;
+                    return TileState.Wall;
                 default:
                     throw new Exception("[" + c + "]" + "は存在しないカラーです");
             }

@@ -46,11 +46,11 @@
     <Compile Include="Field.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="S10B2\Ball.cs" />
-    <Compile Include="S10B2\BoadState.cs" />
+    <Compile Include="Ball.cs" />
+    <Compile Include="BoadState.cs" />
     <Compile Include="S10B2\S10B2.cs" />
     <Compile Include="S10B2\S10B2_O.cs" />
-    <Compile Include="S10B2\Tile.cs" />
+    <Compile Include="Tile.cs" />
     <Compile Include="Standard\Node.cs" />
     <Compile Include="Standard\Standard.cs" />
   </ItemGroup>
