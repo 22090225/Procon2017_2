@@ -24,8 +24,8 @@ namespace Procon2017_2.S10B2
                     {
                         for (int y1 = 0; y1 < Field.Size; y1++)
                         {
-                            if (Field.OriginalBoad[x0, y0] == "w" ||
-                                Field.OriginalBoad[x1, y1] == "w" ||
+                            if (Field.OriginalBoad[x0, y0] == TileState.Wall ||
+                                Field.OriginalBoad[x1, y1] == TileState.Wall ||
                                 (x0 == x1 && y0 == y1)
                                 )
                             {

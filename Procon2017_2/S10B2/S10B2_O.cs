@@ -28,7 +28,7 @@ namespace Procon2017_2.S10B2
             {
                 balls[i] = new Ball() { Coor = startBallPosition[i] };
 
-                var startTile = ConvertCharToState(Field.OriginalBoad[startBallPosition[i].X, startBallPosition[i].Y]);
+                var startTile =Field.OriginalBoad[startBallPosition[i].X, startBallPosition[i].Y];
                 balls[i].Points[(int)startTile] = 1;
                 boad[startBallPosition[i].X, startBallPosition[i].Y].IsPassed = true;
             }
@@ -135,13 +135,13 @@ namespace Procon2017_2.S10B2
 
                         //外に出た場合、ポイントを加算して終了
                         balls[i].IsOut = true;
-                        var endStatus = ConvertCharToState(Field.Ends[vector][vector % 2 == 0 ? next.Y : next.X]);
+                        var endStatus = Field.Ends[vector][vector % 2 == 0 ? next.Y : next.X];
                         points[(int)endStatus] += balls[i].Points[(int)endStatus];
                         includesPoints = true;
 
                         break;
                     }
-                    else if (Field.OriginalBoad[next.X, next.Y] == "w" || boad[next.X, next.Y].IsBall)
+                    else if (Field.OriginalBoad[next.X, next.Y] == TileState.Wall || boad[next.X, next.Y].IsBall)
                     {
                         boad[balls[i].Coor.X, balls[i].Coor.Y].IsBall = true;
                         break;
@@ -150,7 +150,7 @@ namespace Procon2017_2.S10B2
                     {
                         if (!boad[next.X, next.Y].IsPassed)
                         {
-                            balls[i].Points[(int)ConvertCharToState(Field.OriginalBoad[next.X, next.Y])]++;
+                            balls[i].Points[(int)Field.OriginalBoad[next.X, next.Y]]++;
                             boad[next.X, next.Y].IsPassed = true;
                             includesPoints = true;
                         }

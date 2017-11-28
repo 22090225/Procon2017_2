@@ -64,7 +64,7 @@ namespace Procon2017_2.Standard
                     for (int y = 0; y < Field.Size; y++)
                     {
                         // まだCanOutになっていなくて、CanOutに移動できるものはTrue
-                        if (Field.OriginalBoad[x, y] != "w" && !Boad[x, y].CanOut && (Boad[x, y].Next.Contains(null) || Boad[x, y].Next.Any(n => n.CanOut)))
+                        if (Field.OriginalBoad[x, y] != TileState.Wall && !Boad[x, y].CanOut && (Boad[x, y].Next.Contains(null) || Boad[x, y].Next.Any(n => n.CanOut)))
                         {
                             Boad[x, y].CanOut = true;
                             count++;
@@ -129,7 +129,7 @@ namespace Procon2017_2.Standard
         {
             return (coor.X == -1 || coor.Y == -1 || coor.X == Field.Size || coor.Y == Field.Size)
                 ? (bool?)null
-                : Field.OriginalBoad[coor.X, coor.Y] != "w";
+                : Field.OriginalBoad[coor.X, coor.Y] != TileState.Wall;
         }
     }
 }

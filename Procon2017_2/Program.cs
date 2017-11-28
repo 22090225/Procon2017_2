@@ -64,7 +64,7 @@ namespace Procon2017_2
                 for (int x = 0; x < Field.Size; x++)
                 {
                     var node = Standard.Standard.Boad[x, y];
-                    if (node.Tile == "w")
+                    if (node.Tile == TileState.Wall)
                     {
                         Console.Write("■");
                     }
