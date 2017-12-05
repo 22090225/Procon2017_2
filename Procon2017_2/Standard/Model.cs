@@ -9,58 +9,86 @@ namespace Procon2017_2.Standard
     public class Model
     {
         public Ball[,] BallPlace;
-        public List<Ball> Balls;
-        public Model(Coor[] startBalls)
+        public IEnumerable<Coor> Balls;
+        public List<int> Route;
+        public Model(IEnumerable<Coor> startBalls)
         {
-
-            Boad = new BoadState[Field.Size, Field.Size];
-            //初期位置設定
-            for (int i = 0; i < Field.BallNum; i++)
-            {
-                balls[i] = new Ball() { Coor = startBalls[i] };
-
-                var startTile = Field.OriginalBoad[startBalls[i].X, startBalls[i].Y];
-                balls[i].Points[(int)startTile] = 1;
-                boad[startBalls[i].X, startBalls[i].Y].IsPassed = true;
-            }
+            Balls = startBalls.ToList();
+            Route = new List<int>();
         }
 
-        public static Coor[] OneStep(Coor[] balls, int direction)
+        public bool CalculateUntilAllOut()
         {
-            var boad = new int?[Field.Size, Field.Size];
-            //var result = new List<Coor?>();
-            var nexts = balls
-                .Select(b => Standard.Boad[b.X, b.Y])
-
-            var kabutteru = nexts
-                .GroupBy(b => b.Coor)
-                .Where(g => g.Count() > 1);
-                .SelectMany(group =>
-                {
-                    if (group.Count() == 1)
-                    {
-                        return group.Key;
-                    }
-                    return null;
-                });
-
-            for (int i = 0; i < balls.Length; i++)
+            var rnd = new Random();
+            while (Balls.Count() > 0)
             {
-                var next = Standard.Boad[balls[i].X, balls[i].Y];
-                //result.Add(next.Coor);
-                //被っていた場合
-                if (next != null && boad[next.Coor.X, next.Coor.Y] != null)
+                //さっきと違う方向
+                int dir;
+                if (Route.Count() == 0)
                 {
-
+                    dir = rnd.Next(4);
                 }
-                boad[next.Coor.X, next.Coor.Y] = i;
+                else
+                {
+                    dir = (Route.Last() + rnd.Next(3)) % 4;
+                }
+
+                var katamukeOKFrag = true;
+                // 全部canoutになる方向を探す。
+                for (int i = 0; i < 4; i++)
+                {
+                    var nextdir = (dir + i) % 4;
+                    if (Route.Count() != 0 && nextdir == Route.Last())
+                    {
+                        continue;
+                    }
+                    var nextBalls = OneKatamuke(Balls, nextdir);
+                    foreach (var coor in nextBalls)
+                    {
+                        if (!Standard.Boad[coor.X, coor.Y].CanOut)
+                        {
+                            katamukeOKFrag = false;
+                            break;
+                        }
+                    }
+                    if (katamukeOKFrag)
+                    {
+                        Route.Add(nextdir);
+                        Balls = nextBalls;
+                        break;
+                    }
+                }
+                if (!katamukeOKFrag)
+                {
+                    throw new Exception("つみパターンです");
+                }
             }
-            return (Coor[])(result.Where(b => b.HasValue).ToArray());
+            return true;
+
         }
 
-        private Coor Kabuttatoki(Coor coor,, int direction)
+        public static IEnumerable<Coor> OneKatamuke(IEnumerable<Coor> balls, int direction)
         {
-
+            return balls
+                .Select(b => Standard.Boad[b.X, b.Y].Next[direction])
+                .GroupBy(next => next)
+                .SelectMany(g =>
+                {
+                    var count = g.Count(next => next != null);
+                    var list = new List<Coor>();
+                    for (int i = 0; i < count; i++)
+                    {
+                        if (i == 0)
+                        {
+                            list.Add(g.Key.Coor);
+                        }
+                        else
+                        {
+                            list.Add(Standard.OneStep(list[i - 1], (direction + 2) % 4));
+                        }
+                    }
+                    return list;
+                });
         }
 
         private Coor OneBack(Coor coor, int direction)

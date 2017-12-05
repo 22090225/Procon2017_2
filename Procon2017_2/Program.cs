@@ -31,8 +31,18 @@ namespace Procon2017_2
             else
             {
                 Standard.Standard.CreateBoad();
+
+                var startBalls = GenerateStartBalls();
+                var model = new Standard.Model(startBalls);
+                //初期位置
+                for (int i=0; i < 10000; i++)
+                {
+                    model.CalculateUntilAllOut();
+                }
+
+                Write(startBalls, model.Route.ToArray());
 #if DEBUG
-                WriteCanOutMap();
+                //WriteCanOutMap();
 #endif
             }
 
@@ -42,6 +52,20 @@ namespace Procon2017_2
 
             Console.WriteLine(DateTime.UtcNow.Subtract(calculateStartTime).TotalMilliseconds + "ミリ秒くらい時間がかりました！");
 #endif
+        }
+
+        static private Coor[] GenerateStartBalls()
+        {
+            var result = new Coor[Field.BallNum];
+            var rnd = new Random();
+            var nokoriList = new List<Coor>(Standard.Standard.CanOutList);
+            for (int i = 0; i < Field.BallNum; i++)
+            {
+                var index = rnd.Next(Standard.Standard.CanOutList.Count() - i);
+                result[i] = nokoriList[index];
+                nokoriList.RemoveAt(index);
+            }
+            return result;
         }
 
         static private void Write(Coor[] ballposi, int[] route)

@@ -50,6 +50,7 @@
     <Compile Include="BoadState.cs" />
     <Compile Include="S10B2\S10B2.cs" />
     <Compile Include="S10B2\S10B2_O.cs" />
+    <Compile Include="Standard\Model.cs" />
     <Compile Include="Tile.cs" />
     <Compile Include="Standard\Node.cs" />
     <Compile Include="Standard\Standard.cs" />

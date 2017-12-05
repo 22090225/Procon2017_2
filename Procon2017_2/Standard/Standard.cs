@@ -9,9 +9,13 @@ namespace Procon2017_2.Standard
     public class Standard
     {
         public static Node[,] Boad;
+        public static List<Coor> CanOutList;
+
         public static void CreateBoad()
         {
             Boad = new Node[Field.Size, Field.Size];
+            CanOutList= new List<Coor>();
+
             //初期化
             for (int x = 0; x < Field.Size; x++)
             {
@@ -58,6 +62,20 @@ namespace Procon2017_2.Standard
                 }
                 Console.WriteLine("count=" + count);
             }
+
+            // 外に出られるノードのリスト
+            for (int x = 0; x < Field.Size; x++)
+            {
+                for (int y = 0; y < Field.Size; y++)
+                {
+                    if (Field.OriginalBoad[x, y] != TileState.Wall &&
+                        Boad[x, y].CanOut
+                        )
+                    {
+                        CanOutList.Add(new Coor(x, y));
+                    }
+                }
+            }
         }
 
         private static Coor? MoveToStop(Coor start, int direction)
@@ -79,7 +97,7 @@ namespace Procon2017_2.Standard
                 }
             }
         }
-        private static Coor OneStep(Coor start, int direction)
+        public static Coor OneStep(Coor start, int direction)
         {
             switch (direction)
             {
