@@ -31,7 +31,8 @@ namespace Procon2017_2
             }
             else
             {
-                S10B2.S10B2.CalculateRandom(ref maxStartPosition, ref maxStartRoute, calculateStartTime);
+                //S10B2.S10B2.CalculateRandom(ref maxStartPosition, ref maxStartRoute, calculateStartTime);
+                S10B2.S10B2.CalculateRandomSingle(ref maxStartPosition, ref maxStartRoute, calculateStartTime);
 #if DEBUG
                 //WriteCanOutMap();
 #endif

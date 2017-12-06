@@ -93,6 +93,148 @@ namespace Procon2017_2.S10B2
 #endif
         }
 
+        //玉一個で適当に闊歩
+        public static void CalculateRandomSingle(ref Coor[] maxStartPosition, ref int[] maxRoute, DateTime calculateStartTime)
+        {
+            //初期位置
+            maxStartPosition = GenerateRandomStartBalls();
+            var start = maxStartPosition[0];
+            var rnd = new Random();
+            var passedNode = new bool[Field.Size, Field.Size];
+            var route = new List<int>();
+            //一個前に移動した方向
+            var lastdir = 0;
+            passedNode[start.X, start.Y] = true;
+            //9秒間は外に出ない
+            var i = 0;
+            while (i<10000)
+            //while (DateTime.UtcNow.Subtract(calculateStartTime).TotalMilliseconds < 9000)
+            {
+                i++;
+                // 自分
+                var startNode = Standard.Standard.Boad[start.X, start.Y];
+                // 移動できる方向,移動したことのない方向を探す
+                var can = new List<int>();
+                var nonpassed = new List<int>();
+                for (int dir = 0; dir < 4; dir++)
+                {
+                    var nextNode = startNode.Next[dir];
+                    if (lastdir != dir && nextNode != null && nextNode.CanOut)
+                    {
+                        can.Add(dir);
+
+                        if (!passedNode[nextNode.Coor.X, nextNode.Coor.Y])
+                        {
+                            nonpassed.Add(dir);
+                        }
+                    }
+                }
+
+                //移動する方向を決める
+                var direction = 0;
+                // 移動したことのない方向がある場合
+                if (nonpassed.Count() != 0)
+                {
+                    if (nonpassed.Count() == 1)
+                    {
+                        //一個なら次はそこ
+                        direction = nonpassed.First();
+
+                    }
+                    //そうでないならランダムに順番を決める
+                    direction = nonpassed[rnd.Next(nonpassed.Count())];
+                    //次の準備して終了
+                    lastdir = direction;
+                    route.Add(direction);
+                    start = startNode.Next[direction].Coor;
+                    continue;
+                }
+                else
+                {
+                    //ない場合
+                    if (can.Count() == 1)
+                    {
+                        //一個なら次はそこ
+                        direction = can.First();
+
+                    }
+                    //そうでないならランダムに順番を決める 無いはずはない
+                    direction = can[rnd.Next(can.Count())];
+                    //次の準備して終了
+                    lastdir = direction;
+                    route.Add(direction);
+                    start = startNode.Next[direction].Coor;
+                    continue;
+                }
+            }
+            //最後適当に外に出る
+            while (true)
+            {
+                // 自分
+                var startNode = Standard.Standard.Boad[start.X, start.Y];
+                // 外に出る方向、移動できる方向,移動したことのない方向を探す
+                var can = new List<int>();
+                var nonpassed = new List<int>();
+                for (int dir = 0; dir < 4; dir++)
+                {
+                    var nextNode = startNode.Next[dir];
+                    // 外に出れたら終了
+                    if (lastdir != dir && nextNode == null)
+                    {
+                        route.Add(dir);
+                        maxRoute = route.ToArray();
+                        return;
+                    }
+                    if (lastdir != dir && nextNode != null && nextNode.CanOut)
+                    {
+                        can.Add(dir);
+
+                        if (!passedNode[nextNode.Coor.X, nextNode.Coor.Y])
+                        {
+                            nonpassed.Add(dir);
+                        }
+                    }
+                }
+
+                //移動する方向を決める
+                var direction = 0;
+                // 移動したことのない方向がある場合
+                if (nonpassed.Count() != 0)
+                {
+                    if (nonpassed.Count() == 1)
+                    {
+                        //一個なら次はそこ
+                        direction = nonpassed.First();
+
+                    }
+                    //そうでないならランダムに順番を決める
+                    direction = nonpassed[rnd.Next(nonpassed.Count())];
+                    //次の準備して終了
+                    lastdir = direction;
+                    route.Add(direction);
+                    start = startNode.Next[direction].Coor;
+                    continue;
+                }
+                else
+                {
+                    //ない場合
+                    if (can.Count() == 1)
+                    {
+                        //一個なら次はそこ
+                        direction = can.First();
+
+                    }
+                    //そうでないならランダムに順番を決める 無いはずはない
+                    direction = can[rnd.Next(can.Count())];
+                    //次の準備して終了
+                    lastdir = direction;
+                    route.Add(direction);
+                    start = startNode.Next[direction].Coor;
+                    continue;
+                }
+            }
+        }
+
         private static Coor Next(Coor coor)
         {
             if (coor.X == Field.Size - 1)

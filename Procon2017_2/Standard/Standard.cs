@@ -60,7 +60,9 @@ namespace Procon2017_2.Standard
                         }
                     }
                 }
+#if DEBUG
                 Console.WriteLine("count=" + count);
+#endif
             }
 
             // 外に出られるノードのリスト
