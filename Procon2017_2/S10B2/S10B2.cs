@@ -8,6 +8,7 @@ namespace Procon2017_2.S10B2
 {
     public static class S10B2
     {
+        //玉2個 10×10の場合
         public static void Calculate(ref Coor[] maxStartPosition, ref int[] maxRoute)
         {
             maxStartPosition = new Coor[Field.BallNum];
@@ -20,13 +21,21 @@ namespace Procon2017_2.S10B2
             {
                 for (int y0 = 0; y0 < Field.Size; y0++)
                 {
+                    //袋小路は除外
+                    if (Field.OriginalBoad[x0, y0] == TileState.Wall ||
+                        !Standard.Standard.Boad[x0, y0].CanOut
+                        )
+                    {
+                        continue;
+                    }
                     for (int x1 = 0; x1 < Field.Size; x1++)
                     {
                         for (int y1 = 0; y1 < Field.Size; y1++)
                         {
-                            if (Field.OriginalBoad[x0, y0] == TileState.Wall ||
-                                Field.OriginalBoad[x1, y1] == TileState.Wall ||
-                                (x0 == x1 && y0 == y1)
+                            //袋小路は除外
+                            if (Field.OriginalBoad[x1, y1] == TileState.Wall ||
+                                (x0 == x1 && y0 == y1) ||
+                                !Standard.Standard.Boad[x1, y1].CanOut
                                 )
                             {
                                 continue;
@@ -47,10 +56,42 @@ namespace Procon2017_2.S10B2
                     }
                 }
             }
-
-
         }
 
+        //それ以外は初期位置ランダム
+        public static void CalculateRandom(ref Coor[] maxStartPosition, ref int[] maxRoute, DateTime calculateStartTime)
+        {
+            maxStartPosition = new Coor[Field.BallNum];
+            int maxpoint = 0;
+            int katamuke = 0;
+
+            var startBallPosition = new Coor[Field.BallNum];
+
+#if DEBUG
+            var i = 0;
+#endif
+            while (DateTime.UtcNow.Subtract(calculateStartTime).TotalMilliseconds < 9000)
+            {
+#if DEBUG
+                i++;
+#endif
+                //壁と袋小路を除外したランダムな被らない初期位置
+                startBallPosition = GenerateRandomStartBalls();
+
+                var field = new S10B2_O(calculateStartTime);
+                field.CalculateAllRoute(startBallPosition);
+                if (field.MaxPoint > maxpoint || (field.MaxPoint == maxpoint && field.MaxRoute.Length > katamuke))
+                {
+                    maxpoint = field.MaxPoint;
+                    maxStartPosition = startBallPosition;
+                    maxRoute = field.MaxRoute;
+                    katamuke = field.MaxRoute.Length;
+                }
+            }
+#if DEBUG
+            Console.WriteLine(i + "回繰り返し");
+#endif
+        }
 
         private static Coor Next(Coor coor)
         {
@@ -66,5 +107,18 @@ namespace Procon2017_2.S10B2
             return coor;
         }
 
+        private static Coor[] GenerateRandomStartBalls()
+        {
+            var result = new Coor[Field.BallNum];
+            var rnd = new Random();
+            var nokoriList = new List<Coor>(Standard.Standard.CanOutList);
+            for (int i = 0; i < Field.BallNum; i++)
+            {
+                var index = rnd.Next(Standard.Standard.CanOutList.Count() - i);
+                result[i] = nokoriList[index];
+                nokoriList.RemoveAt(index);
+            }
+            return result;
+        }
     }
 }

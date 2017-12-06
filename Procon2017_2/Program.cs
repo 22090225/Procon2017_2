@@ -12,60 +12,37 @@ namespace Procon2017_2
         static void Main(string[] args)
         {
 #if DEBUG
-            var calculateStartTime = DateTime.UtcNow;
             // 問題の
             // シード、サイズ、弾の数、壁割合
             // 問題作成
             Console.WriteLine("デバッグバージョンです。");
 #endif
+            var calculateStartTime = DateTime.UtcNow;
+
             Field.InitializeField();
             Coor[] maxStartPosition = null;
             int[] maxStartRoute = null;
+            Standard.Standard.CreateBoad();
             //場合分け
             // size10 玉2の場合 3/27 全パターン
-            //if (Field.Size == 10 && Field.BallNum == 2)
-            if (false)
+            if (Field.Size == 10 && Field.BallNum == 2)
             {
                 S10B2.S10B2.Calculate(ref maxStartPosition, ref maxStartRoute);
             }
             else
             {
-                Standard.Standard.CreateBoad();
-
-                var startBalls = GenerateStartBalls();
-                var model = new Standard.Model(startBalls);
-                //初期位置
-                for (int i=0; i < 10000; i++)
-                {
-                    model.CalculateUntilAllOut();
-                }
-
-                Write(startBalls, model.Route.ToArray());
+                S10B2.S10B2.CalculateRandom(ref maxStartPosition, ref maxStartRoute, calculateStartTime);
 #if DEBUG
                 //WriteCanOutMap();
 #endif
             }
 
-            //Write(maxStartPosition, maxStartRoute);
+            Write(maxStartPosition, maxStartRoute);
 
 #if DEBUG
 
             Console.WriteLine(DateTime.UtcNow.Subtract(calculateStartTime).TotalMilliseconds + "ミリ秒くらい時間がかりました！");
 #endif
-        }
-
-        static private Coor[] GenerateStartBalls()
-        {
-            var result = new Coor[Field.BallNum];
-            var rnd = new Random();
-            var nokoriList = new List<Coor>(Standard.Standard.CanOutList);
-            for (int i = 0; i < Field.BallNum; i++)
-            {
-                var index = rnd.Next(Standard.Standard.CanOutList.Count() - i);
-                result[i] = nokoriList[index];
-                nokoriList.RemoveAt(index);
-            }
-            return result;
         }
 
         static private void Write(Coor[] ballposi, int[] route)

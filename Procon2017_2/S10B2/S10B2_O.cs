@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Procon2017_2.Standard;
 
 namespace Procon2017_2.S10B2
 {
@@ -12,8 +13,17 @@ namespace Procon2017_2.S10B2
 
         public int MaxPoint { get; set; }
 
-        public S10B2_O(){
+        public DateTime CalculateStartTime { get; set; }
+
+        public S10B2_O()
+        {
             MaxRoute = new int[0];
+        }
+
+        public S10B2_O(DateTime calculateStaetTIme)
+        {
+            MaxRoute = new int[0];
+            CalculateStartTime = calculateStaetTIme;
         }
 
         public void CalculateAllRoute(Coor[] startBallPosition)
@@ -28,7 +38,7 @@ namespace Procon2017_2.S10B2
             {
                 balls[i] = new Ball() { Coor = startBallPosition[i] };
 
-                var startTile =Field.OriginalBoad[startBallPosition[i].X, startBallPosition[i].Y];
+                var startTile = Field.OriginalBoad[startBallPosition[i].X, startBallPosition[i].Y];
                 balls[i].Points[(int)startTile] = 1;
                 boad[startBallPosition[i].X, startBallPosition[i].Y].IsPassed = true;
             }
@@ -37,6 +47,10 @@ namespace Procon2017_2.S10B2
 
         public void CoverAllIncline(int lastIncline, BoadState[,] lastBoad, int[] lastPoints, Ball[] lastBalls, List<int> lastRoute)
         {
+            if (DateTime.UtcNow.Subtract(CalculateStartTime).TotalMilliseconds > 9000)
+            {
+                return;
+            }
             //全ての玉が外に出たら最大値を比較して、終了
             if (lastBalls.FirstOrDefault(b => b.IsOut == false) == null)
             {
@@ -66,7 +80,19 @@ namespace Procon2017_2.S10B2
                     continue;
                 }
                 //1回傾ける ポイントがある場合
-                if (InclineField(i, currentBoad, currentPoints, currentBalls, currentRoute))
+                var onekatamuke = InclineField(i, currentBoad, currentPoints, currentBalls, currentRoute);
+                var fukurokojinashi = true;
+                foreach (var ball in currentBalls)
+                {
+                    if (!Standard.Standard.Boad[ball.Coor.X, ball.Coor.Y].CanOut)
+                    {
+                        break;
+                    }
+                }
+                //かつ、袋小路に移動しない場合
+                if (onekatamuke &&
+                    fukurokojinashi
+                    )
                 {
 
                     //次へ
