@@ -57,6 +57,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+    <None Include="test.bat" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="input.txt">
