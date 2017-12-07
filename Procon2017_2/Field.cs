@@ -12,9 +12,11 @@ namespace Procon2017_2
         public static int BallNum;
         public static TileState[][] Ends;
         public static TileState[,] OriginalBoad;
+        public static Random Rnd;
 
         public static void InitializeField()
         {
+            Rnd = new Random();
             Size = int.Parse(Console.In.ReadLine());
             BallNum = int.Parse(Console.In.ReadLine());
 

@@ -9,7 +9,7 @@ namespace Procon2017_2.S10B2
     public static class S10B2
     {
         //玉2個 10×10の場合
-        public static void Calculate(ref Coor[] maxStartPosition, ref int[] maxRoute)
+        public static void Calculate(ref Coor[] maxStartPosition, ref int[] maxRoute, DateTime calculateStartTime)
         {
             maxStartPosition = new Coor[Field.BallNum];
             int maxpoint = 0;
@@ -42,7 +42,7 @@ namespace Procon2017_2.S10B2
                             }
                             startBallPosition[0] = new Coor(x0, y0);
                             startBallPosition[1] = new Coor(x1, y1);
-                            var field = new S10B2_O();
+                            var field = new S10B2_O(calculateStartTime);
                             field.CalculateAllRoute(startBallPosition);
                             if (field.MaxPoint > maxpoint || (field.MaxPoint == maxpoint && field.MaxRoute.Length > katamuke))
                             {
@@ -99,15 +99,12 @@ namespace Procon2017_2.S10B2
             //初期位置
             maxStartPosition = GenerateRandomStartBalls();
             var start = maxStartPosition[0];
-            var rnd = new Random();
             var passedNode = new bool[Field.Size, Field.Size];
             var route = new List<int>();
-            //一個前に移動した方向
-            var lastdir = 0;
             passedNode[start.X, start.Y] = true;
             //9秒間は外に出ない
             var i = 0;
-            while (i<10000)
+            while (i < 10000)
             //while (DateTime.UtcNow.Subtract(calculateStartTime).TotalMilliseconds < 9000)
             {
                 i++;
@@ -119,7 +116,7 @@ namespace Procon2017_2.S10B2
                 for (int dir = 0; dir < 4; dir++)
                 {
                     var nextNode = startNode.Next[dir];
-                    if (lastdir != dir && nextNode != null && nextNode.CanOut)
+                    if (nextNode != startNode && nextNode != null && nextNode.CanOut)
                     {
                         can.Add(dir);
 
@@ -142,11 +139,11 @@ namespace Procon2017_2.S10B2
 
                     }
                     //そうでないならランダムに順番を決める
-                    direction = nonpassed[rnd.Next(nonpassed.Count())];
+                    direction = nonpassed[Field.Rnd.Next(nonpassed.Count())];
                     //次の準備して終了
-                    lastdir = direction;
                     route.Add(direction);
                     start = startNode.Next[direction].Coor;
+                    passedNode[start.X, start.Y] = true;
                     continue;
                 }
                 else
@@ -159,11 +156,11 @@ namespace Procon2017_2.S10B2
 
                     }
                     //そうでないならランダムに順番を決める 無いはずはない
-                    direction = can[rnd.Next(can.Count())];
+                    direction = can[Field.Rnd.Next(can.Count())];
                     //次の準備して終了
-                    lastdir = direction;
                     route.Add(direction);
                     start = startNode.Next[direction].Coor;
+                    passedNode[start.X, start.Y] = true;
                     continue;
                 }
             }
@@ -179,13 +176,13 @@ namespace Procon2017_2.S10B2
                 {
                     var nextNode = startNode.Next[dir];
                     // 外に出れたら終了
-                    if (lastdir != dir && nextNode == null)
+                    if (nextNode != startNode && nextNode == null)
                     {
                         route.Add(dir);
                         maxRoute = route.ToArray();
                         return;
                     }
-                    if (lastdir != dir && nextNode != null && nextNode.CanOut)
+                    if (nextNode != startNode && nextNode != null && nextNode.CanOut)
                     {
                         can.Add(dir);
 
@@ -208,11 +205,11 @@ namespace Procon2017_2.S10B2
 
                     }
                     //そうでないならランダムに順番を決める
-                    direction = nonpassed[rnd.Next(nonpassed.Count())];
+                    direction = nonpassed[Field.Rnd.Next(nonpassed.Count())];
                     //次の準備して終了
-                    lastdir = direction;
                     route.Add(direction);
                     start = startNode.Next[direction].Coor;
+                    passedNode[start.X, start.Y] = true;
                     continue;
                 }
                 else
@@ -225,11 +222,11 @@ namespace Procon2017_2.S10B2
 
                     }
                     //そうでないならランダムに順番を決める 無いはずはない
-                    direction = can[rnd.Next(can.Count())];
+                    direction = can[Field.Rnd.Next(can.Count())];
                     //次の準備して終了
-                    lastdir = direction;
                     route.Add(direction);
                     start = startNode.Next[direction].Coor;
+                    passedNode[start.X, start.Y] = true;
                     continue;
                 }
             }
@@ -252,11 +249,10 @@ namespace Procon2017_2.S10B2
         private static Coor[] GenerateRandomStartBalls()
         {
             var result = new Coor[Field.BallNum];
-            var rnd = new Random();
             var nokoriList = new List<Coor>(Standard.Standard.CanOutList);
             for (int i = 0; i < Field.BallNum; i++)
             {
-                var index = rnd.Next(Standard.Standard.CanOutList.Count() - i);
+                var index = Field.Rnd.Next(Standard.Standard.CanOutList.Count() - i);
                 result[i] = nokoriList[index];
                 nokoriList.RemoveAt(index);
             }

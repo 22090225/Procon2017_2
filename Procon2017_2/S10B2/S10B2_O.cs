@@ -15,11 +15,6 @@ namespace Procon2017_2.S10B2
 
         public DateTime CalculateStartTime { get; set; }
 
-        public S10B2_O()
-        {
-            MaxRoute = new int[0];
-        }
-
         public S10B2_O(DateTime calculateStaetTIme)
         {
             MaxRoute = new int[0];
@@ -72,15 +67,28 @@ namespace Procon2017_2.S10B2
             List<int> currentRoute = null;
 
             CopyDataToCurrent(lastBoad, lastPoints, lastBalls, lastRoute, currentBoad, currentPoints, currentBalls, ref currentRoute);
+            //前回移動した方向を抜いた3方向
+            var dirList = new List<int>();
             for (int i = 0; i < 4; i++)
             {
-                //前回と同じ操作はしない
-                if (i == lastIncline)
+                if (i != lastIncline)
                 {
-                    continue;
+                    dirList.Add(i);
                 }
+            }
+
+            for (int i = 0; i < 3; i++)
+            {
+                var randomIndex = Field.Rnd.Next(3-i);
+                var direction = dirList[randomIndex];
+                dirList.RemoveAt(randomIndex);
+                //前回と同じ操作はしない
+                //if (direction == lastIncline)
+                //{
+                //    continue;
+                //}
                 //1回傾ける ポイントがある場合
-                var onekatamuke = InclineField(i, currentBoad, currentPoints, currentBalls, currentRoute);
+                var onekatamuke = InclineField(direction, currentBoad, currentPoints, currentBalls, currentRoute);
                 var fukurokojinashi = true;
                 foreach (var ball in currentBalls)
                 {
@@ -96,7 +104,7 @@ namespace Procon2017_2.S10B2
                 {
 
                     //次へ
-                    CoverAllIncline(i, currentBoad, currentPoints, currentBalls, currentRoute);
+                    CoverAllIncline(direction, currentBoad, currentPoints, currentBalls, currentRoute);
                     //終わったら元に戻して別の方向へ
                     CopyDataToCurrent(lastBoad, lastPoints, lastBalls, lastRoute, currentBoad, currentPoints, currentBalls, ref currentRoute);
 
@@ -105,7 +113,7 @@ namespace Procon2017_2.S10B2
                 else
                 {
                     //全方向動かした場合は何もせず終了(重複ループ)
-                    if (i == 3 || (lastIncline == 3 && i == 2))
+                    if (i == 3 )
                     {
                         return;
                     }

@@ -27,35 +27,41 @@ namespace Procon2017_2
             // size10 玉2の場合 3/27 全パターン
             if (Field.Size == 10 && Field.BallNum == 2)
             {
-                S10B2.S10B2.Calculate(ref maxStartPosition, ref maxStartRoute);
+                S10B2.S10B2.Calculate(ref maxStartPosition, ref maxStartRoute,calculateStartTime);
             }
             else
             {
-                //S10B2.S10B2.CalculateRandom(ref maxStartPosition, ref maxStartRoute, calculateStartTime);
-                S10B2.S10B2.CalculateRandomSingle(ref maxStartPosition, ref maxStartRoute, calculateStartTime);
+                S10B2.S10B2.CalculateRandom(ref maxStartPosition, ref maxStartRoute, calculateStartTime);
+                //S10B2.S10B2.CalculateRandomSingle(ref maxStartPosition, ref maxStartRoute, calculateStartTime);
 #if DEBUG
                 //WriteCanOutMap();
 #endif
             }
-
             Write(maxStartPosition, maxStartRoute);
-
 #if DEBUG
 
-            Console.WriteLine(DateTime.UtcNow.Subtract(calculateStartTime).TotalMilliseconds + "ミリ秒くらい時間がかりました！");
+            Console.WriteLine("\n"+DateTime.UtcNow.Subtract(calculateStartTime).TotalMilliseconds + "ミリ秒くらい時間がかりました！");
 #endif
         }
 
         static private void Write(Coor[] ballposi, int[] route)
         {
+            var sb = new StringBuilder();
             foreach (var coor in ballposi)
             {
-                Console.WriteLine(coor.X + " " + coor.Y);
+                sb.Append(coor.X);
+                sb.Append(" ");
+                sb.Append(coor.Y);
+                sb.Append("\r\n");
             }
-            foreach (var direction in route)
+
+            foreach (var r in route)
             {
-                Console.WriteLine(direction);
+                sb.Append(r);
+                sb.Append("\r\n");
             }
+            sb.Length -= 2; // 末尾を1文字削除
+            Console.Write(sb.ToString());
         }
 
 #if DEBUG
